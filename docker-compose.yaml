@@ -6,8 +6,8 @@ services:
     container_name: open-webui
     restart: unless-stopped
     environment:
-      # ホストを127.0.0.1に設定して外部からの直接アクセスを防ぐ
-      - HOST=127.0.0.1
+      # Cloudflareトンネルからアクセスできるようにホストを0.0.0.0に設定
+      - HOST=0.0.0.0
       # Microsoft OAuth設定
       - ENABLE_OAUTH_SIGNUP=true
       - OAUTH_MERGE_ACCOUNTS_BY_EMAIL=true
@@ -21,7 +21,7 @@ services:
     volumes:
       - open-webui-data:/app/backend/data
     ports:
-      - "127.0.0.1:8080:8080"  # ローカルホストのみで公開
+      - "8080:8080"  # Cloudflareトンネルからアクセスできるように公開
 
   cloudflared:
     image: cloudflare/cloudflared:latest

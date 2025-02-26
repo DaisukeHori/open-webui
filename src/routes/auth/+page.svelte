@@ -130,7 +130,7 @@
 								{$i18n.t(`Sign in to {{WEBUI_NAME}}`, { WEBUI_NAME: $WEBUI_NAME })}
 							</div>
 						</div>
-						{#if $config?.oauth?.providers?.microsoft}
+						
 							<div class="flex flex-col space-y-2">
 								<button
 									class="flex justify-center items-center bg-gray-700/5 hover:bg-gray-700/10 dark:bg-gray-100/5 dark:hover:bg-gray-100/10 dark:text-gray-300 dark:hover:text-white transition w-full rounded-full font-medium text-sm py-2.5"
@@ -156,7 +156,7 @@
 									<span>{$i18n.t('Continue with {{provider}}', { provider: 'Microsoft' })}</span>
 								</button>
 							</div>
-						{/if}
+						
 					</div>
 				{/if}
 			</div>
