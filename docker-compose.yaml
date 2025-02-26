@@ -1,13 +1,32 @@
-version: "3.8"
+version: '3.8'
+
 services:
-  open-webui:
-    build: .
-    image: custom-open-webui:latest
-    container_name: open-webui
+  ollama:
+    volumes:
+      - ollama:/root/.ollama
+    container_name: ollama
+    pull_policy: always
+    tty: true
     restart: unless-stopped
+    image: ollama/ollama:${OLLAMA_DOCKER_TAG-latest}
+
+  open-webui:
+    build:
+      context: .
+      args:
+        OLLAMA_BASE_URL: '/ollama'
+      dockerfile: Dockerfile
+    image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG-main}
+    container_name: open-webui
+    volumes:
+      - open-webui:/app/backend/data
+    depends_on:
+      - ollama
+    ports:
+      - ${OPEN_WEBUI_PORT-3000}:8080
     environment:
-      # Cloudflareトンネルからアクセスできるようにホストを0.0.0.0に設定
-      - HOST=0.0.0.0
+      - 'OLLAMA_BASE_URL=http://ollama:11434'
+      - 'WEBUI_SECRET_KEY='
       # Microsoft OAuth設定
       - ENABLE_OAUTH_SIGNUP=true
       - OAUTH_MERGE_ACCOUNTS_BY_EMAIL=true
@@ -18,10 +37,11 @@ services:
       - ENABLE_SIGNUP=false
       - ENABLE_LOGIN_FORM=false
       - ENABLE_PASSWORD_LOGIN=false
-    volumes:
-      - open-webui-data:/app/backend/data
-    ports:
-      - "8080:8080"  # Cloudflareトンネルからアクセスできるように公開
+      # ホストを0.0.0.0に設定
+      - HOST=0.0.0.0
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    restart: unless-stopped
 
   cloudflared:
     image: cloudflare/cloudflared:latest
@@ -32,4 +52,5 @@ services:
     command: tunnel run
 
 volumes:
-  open-webui-data:
+  ollama: {}
+  open-webui: {}
