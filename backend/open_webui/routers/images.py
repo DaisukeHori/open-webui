@@ -490,7 +490,6 @@ async def image_generations(
                     if form_data.size
                     else request.app.state.config.IMAGE_SIZE
                 ),
-                "response_format": "b64_json",
             }
 
             # Use asyncio.to_thread for the requests.post call
@@ -504,12 +503,22 @@ async def image_generations(
             r.raise_for_status()
             res = r.json()
 
+            # 変更後：
             images = []
 
             for image in res["data"]:
-                image_data, content_type = load_b64_image_data(image["b64_json"])
-                url = upload_image(request, data, image_data, content_type, user)
-                images.append({"url": url})
+                # URLベースのレスポンスを処理
+                if "url" in image:
+                    image_data, content_type = load_url_image_data(image["url"])
+                    if image_data:
+                        url = upload_image(request, data, image_data, content_type, user)
+                        images.append({"url": url})
+                # b64_jsonベースのレスポンスも念のため対応
+                elif "b64_json" in image:
+                    image_data, content_type = load_b64_image_data(image["b64_json"])
+                    if image_data:
+                        url = upload_image(request, data, image_data, content_type, user)
+                        images.append({"url": url})
             return images
 
         elif request.app.state.config.IMAGE_GENERATION_ENGINE == "gemini":
