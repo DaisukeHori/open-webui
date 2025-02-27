@@ -18,3 +18,10 @@ uploads
 **/*.db
 _test
 backend/data/*
+# キャッシュファイルを無視
+**/.cache
+**/*.pyc
+.git
+.github
+# テストファイルを無視
+**/*_test.*

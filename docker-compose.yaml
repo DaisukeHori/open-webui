@@ -1,11 +1,16 @@
-version: '3.8'
-
+# バージョン属性は非推奨のため削除
+services:
   open-webui:
     build:
       context: .
       args:
-        OLLAMA_BASE_URL: '/ollama'
+        # メモリ不足対策
+        NODE_OPTIONS: --max-old-space-size=2048
+        DOCKER_BUILDKIT: 1
       dockerfile: Dockerfile
+      # ビルドプロセスを最適化
+      shm_size: '1gb'
+
     image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG-main}
     container_name: open-webui
     volumes:

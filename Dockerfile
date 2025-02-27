@@ -26,9 +26,17 @@ ARG BUILD_HASH
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-# Node.jsのメモリ制限を増やしてインストールとビルドを実行
-ENV NODE_OPTIONS="--max-old-space-size=4096"
-RUN npm ci && npm cache clean --force
+
+# Node.jsのメモリ制限を増やし、ビルドプロセスを最適化
+ENV NODE_OPTIONS="--max-old-space-size=2048"
+
+# npmインストールを最適化
+RUN npm ci --prefer-offline --no-audit --progress=false && \
+    npm cache clean --force
+
+# 一時ファイルを削除して空き容量を確保
+RUN rm -rf /tmp/* || true
+RUN rm -rf /var/cache/apt/archives/* || true
 
 COPY . .
 ENV APP_BUILD_HASH=${BUILD_HASH}
