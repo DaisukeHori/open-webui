@@ -1,20 +1,20 @@
 :root {
   --color-gray-50: #FFFFFF;
   --color-gray-100: #F6F6F6;
-  --color-gray-200: #F6F6F6;
-  --color-gray-300: #B9B9B9;
-  --color-gray-400: #B9B9B9;
+  --color-gray-200: #EEEEEE;
+  --color-gray-300: #E0E0E0;
+  --color-gray-400: #CCCCCC;
   --color-gray-500: #B9B9B9;
-  --color-gray-600: #666666;
-  --color-gray-700: #666666;
+  --color-gray-600: #999999;
+  --color-gray-700: #777777;
   --color-gray-800: #666666;
-  --color-gray-850: #666666;
-  --color-gray-900: #666666;
-  --color-gray-950: #666666;
+  --color-gray-850: #555555;
+  --color-gray-900: #444444;
+  --color-gray-950: #333333;
 }
 
-.revol-gpt * {
-  color: #666666 !important;
+.revol-gpt {
+  color: #444444 !important;
   stroke: #82B2EC !important;
 }
 
@@ -23,11 +23,11 @@
 }
 
 .revol-gpt #nav {
-  background-color: #F6F6F6;
+  background-color: #EEEEEE;
 }
 
 .revol-gpt .py-2\.5.my-auto.flex.flex-col.justify-between.h-screen {
-  background: #F6F6F6;
+  background: #EEEEEE;
 }
 
 .revol-gpt .bg-white.dark\:bg-gray-800 {
@@ -39,7 +39,7 @@
 }
 
 .revol-gpt #chat-input {
-  background: #F6F6F6;
+  background: #FFFFFF;
   margin: 0.3rem;
   padding: 0.5rem;
 }
@@ -50,7 +50,7 @@
 }
 
 .revol-gpt .text-white.bg-gray-100.dark\:text-gray-800.dark\:bg-gray-600.disabled.transition.rounded-lg.p-1.mr-0\.5.w-7.h-7.self-center {
-  background-color: #B9B9B9;
+  background-color: #CCCCCC;
   transition: background-color 0.2s ease-out linear;
 }
 
@@ -65,7 +65,7 @@
 }
 
 .revol-gpt .w-full.flex.justify-between.rounded-md.px-3.py-2.hover\:bg-gray-900.bg-gray-900.transition.whitespace-nowrap.text-ellipsis {
-  background-color: #82B2EC;
+  background-color: #5999E8;
   font-weight: bold;
 }
 
@@ -75,7 +75,7 @@
 }
 
 .revol-gpt .text-xs.text-gray-700.uppercase.bg-gray-50.dark\:bg-gray-700.dark\:text-gray-400 {
-  background-color: #F6F6F6;
+  background-color: #EEEEEE;
 }
 
 .revol-gpt .scrollbar-hidden.relative.overflow-x-auto.whitespace-nowrap.svelte-3g4avz {
@@ -87,7 +87,7 @@
 }
 
 .revol-gpt .message.svelte-1nauejd {
-  color: #666666 !important;
+  color: #333333 !important;
 }
 
 .revol-gpt #dropdownDots {
@@ -95,15 +95,15 @@
 }
 
 .revol-gpt .flex.py-2\.5.px-3\.5.w-full.hover\:bg-gray-800.transition:hover {
-  background: #B9B9B9;
+  background: #E0E0E0;
 }
 
 .revol-gpt .m-auto.rounded-xl.max-w-full.w-\[40rem\].mx-2.bg-gray-50.dark\:bg-gray-900.shadow-3xl {
-  background-color: #F6F6F6;
+  background-color: #FFFFFF;
 }
 
 .revol-gpt .w-full.rounded.p-4.text-sm.dark\:text-gray-300.dark\:bg-gray-800.outline-none.resize-none {
-  background-color: #F6F6F6;
+  background-color: #FFFFFF;
 }
 
 .revol-gpt .w-full.rounded.py-2.px-4.text-sm.dark\:text-gray-300.dark\:bg-gray-800.outline-none.svelte-1vx7r9s {
@@ -115,7 +115,7 @@
 }
 
 .revol-gpt .px-2\.5.py-2\.5.min-w-fit.rounded-lg.flex-1.md\:flex-none.flex.text-right.transition.hover\:bg-gray-300.dark\:hover\:bg-gray-800:hover {
-  background-color: #B9B9B9;
+  background-color: #E0E0E0;
 }
 
 .revol-gpt .px-4.py-2.bg-emerald-600.hover\:bg-emerald-700.text-gray-100.transition.rounded {
@@ -123,7 +123,7 @@
 }
 
 .revol-gpt #chat-search > * {
-  background-color: #F6F6F6 !important;
+  background-color: #FFFFFF !important;
 }
 
 .revol-gpt .svelte-1ee93ns {
@@ -134,6 +134,16 @@
 .revol-gpt .svelte-11kvm4p {
   --primary: #82B2EC !important;
   --secondary: #FFFFFF !important;
+}
+
+/* チャットメッセージの背景と文字色 */
+.revol-gpt .chat-assistant {
+  background-color: #F0F5FF !important;
+  color: #333333 !important;
+}
+
+.revol-gpt .chat-user {
+  color: #333333 !important;
 }
 
 /* ボタンとアクションのスタイル */
@@ -150,7 +160,7 @@
 /* 入力フィールドのスタイル */
 .revol-gpt input, 
 .revol-gpt textarea {
-  background-color: #F6F6F6 !important;
+  background-color: #FFFFFF !important;
   border-color: #B9B9B9 !important;
 }
 
@@ -164,6 +174,26 @@
 }
 
 /* スクロールバーのスタイル */
-.revol-gpt ::-webkit-scrollbar-thumb {
+.revol-gpt::-webkit-scrollbar-thumb {
   background-color: rgba(185, 185, 185, 0.8) !important;
+}
+
+/* サイドバーとメイン部分の区別 */
+.revol-gpt #nav {
+  background-color: #EEEEEE !important;
+}
+
+/* メイン部分の背景 */
+.revol-gpt .app > div:not(#nav) {
+  background-color: #FFFFFF !important;
+}
+
+/* メッセージ内のコードブロック */
+.revol-gpt pre {
+  background-color: #EEEEEE !important;
+}
+
+/* ヘッダーとフッターのスタイル */
+.revol-gpt .bg-white.dark\:bg-gray-900 {
+  background-color: #FFFFFF !important;
 }
