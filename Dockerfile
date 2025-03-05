@@ -28,7 +28,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 # Node.jsのメモリ制限を増やし、ビルドプロセスを最適化
-ENV NODE_OPTIONS="--max-old-space-size=2048"
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 
 # npmインストールを最適化
 RUN npm ci --prefer-offline --no-audit --progress=false && \
