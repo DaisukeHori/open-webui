@@ -1,0 +1,169 @@
+:root {
+  --color-gray-50: #FFFFFF;
+  --color-gray-100: #F6F6F6;
+  --color-gray-200: #F6F6F6;
+  --color-gray-300: #B9B9B9;
+  --color-gray-400: #B9B9B9;
+  --color-gray-500: #B9B9B9;
+  --color-gray-600: #666666;
+  --color-gray-700: #666666;
+  --color-gray-800: #666666;
+  --color-gray-850: #666666;
+  --color-gray-900: #666666;
+  --color-gray-950: #666666;
+}
+
+.revol-gpt * {
+  color: #666666 !important;
+  stroke: #82B2EC !important;
+}
+
+.revol-gpt .app > * {
+  background-color: #FFFFFF !important;
+}
+
+.revol-gpt #nav {
+  background-color: #F6F6F6;
+}
+
+.revol-gpt .py-2\.5.my-auto.flex.flex-col.justify-between.h-screen {
+  background: #F6F6F6;
+}
+
+.revol-gpt .bg-white.dark\:bg-gray-800 {
+  background: #F6F6F6;
+}
+
+.revol-gpt .w-4.h-4 {
+  fill: #82B2EC;
+}
+
+.revol-gpt #chat-input {
+  background: #F6F6F6;
+  margin: 0.3rem;
+  padding: 0.5rem;
+}
+
+.revol-gpt .bg-gradient-to-t.from-white.dark\:from-gray-800.from-40\%.pb-2 {
+  background: #F6F6F6 !important;
+  padding-top: 0.6rem;
+}
+
+.revol-gpt .text-white.bg-gray-100.dark\:text-gray-800.dark\:bg-gray-600.disabled.transition.rounded-lg.p-1.mr-0\.5.w-7.h-7.self-center {
+  background-color: #B9B9B9;
+  transition: background-color 0.2s ease-out linear;
+}
+
+.revol-gpt .bg-black.text-white.hover\:bg-gray-900.dark\:bg-white.dark\:text-black.dark\:hover\:bg-gray-100.transition.rounded-lg.p-1.mr-0\.5.w-7.h-7.self-center {
+  background-color: #5999E8;
+  transition: background-color 0.2s ease-out linear;
+}
+
+.revol-gpt .bg-black.text-white.hover\:bg-gray-900.dark\:bg-white.dark\:text-black.dark\:hover\:bg-gray-100.transition.rounded-lg.p-1.mr-0\.5.w-7.h-7.self-center > * {
+  fill: #FFFFFF !important;
+  transition: fill 0.2s ease-out linear;
+}
+
+.revol-gpt .w-full.flex.justify-between.rounded-md.px-3.py-2.hover\:bg-gray-900.bg-gray-900.transition.whitespace-nowrap.text-ellipsis {
+  background-color: #82B2EC;
+  font-weight: bold;
+}
+
+.revol-gpt .hover\:bg-gray-900:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(130 178 236 / var(--tw-bg-opacity));
+}
+
+.revol-gpt .text-xs.text-gray-700.uppercase.bg-gray-50.dark\:bg-gray-700.dark\:text-gray-400 {
+  background-color: #F6F6F6;
+}
+
+.revol-gpt .scrollbar-hidden.relative.overflow-x-auto.whitespace-nowrap.svelte-3g4avz {
+  border-radius: 16px 16px 0 0;
+}
+
+.revol-gpt .base.enter.svelte-ug60r4 {
+  background-color: #5999E8;
+}
+
+.revol-gpt .message.svelte-1nauejd {
+  color: #666666 !important;
+}
+
+.revol-gpt #dropdownDots {
+  background-color: #F6F6F6;
+}
+
+.revol-gpt .flex.py-2\.5.px-3\.5.w-full.hover\:bg-gray-800.transition:hover {
+  background: #B9B9B9;
+}
+
+.revol-gpt .m-auto.rounded-xl.max-w-full.w-\[40rem\].mx-2.bg-gray-50.dark\:bg-gray-900.shadow-3xl {
+  background-color: #F6F6F6;
+}
+
+.revol-gpt .w-full.rounded.p-4.text-sm.dark\:text-gray-300.dark\:bg-gray-800.outline-none.resize-none {
+  background-color: #F6F6F6;
+}
+
+.revol-gpt .w-full.rounded.py-2.px-4.text-sm.dark\:text-gray-300.dark\:bg-gray-800.outline-none.svelte-1vx7r9s {
+  background-color: #F6F6F6;
+}
+
+.revol-gpt .px-2\.5.py-2\.5.min-w-fit.rounded-lg.flex-1.md\:flex-none.flex.text-right.transition.bg-gray-200.dark\:bg-gray-700 {
+  background-color: #F6F6F6;
+}
+
+.revol-gpt .px-2\.5.py-2\.5.min-w-fit.rounded-lg.flex-1.md\:flex-none.flex.text-right.transition.hover\:bg-gray-300.dark\:hover\:bg-gray-800:hover {
+  background-color: #B9B9B9;
+}
+
+.revol-gpt .px-4.py-2.bg-emerald-600.hover\:bg-emerald-700.text-gray-100.transition.rounded {
+  background-color: #538BD1;
+}
+
+.revol-gpt #chat-search > * {
+  background-color: #F6F6F6 !important;
+}
+
+.revol-gpt .svelte-1ee93ns {
+  --primary: #5999E8 !important;
+  --secondary: #FFFFFF !important;
+}
+
+.revol-gpt .svelte-11kvm4p {
+  --primary: #82B2EC !important;
+  --secondary: #FFFFFF !important;
+}
+
+/* ボタンとアクションのスタイル */
+.revol-gpt button.bg-gray-900, 
+.revol-gpt button.dark\:bg-gray-900 {
+  background-color: #5999E8 !important;
+}
+
+.revol-gpt button.hover\:bg-gray-900:hover, 
+.revol-gpt button.dark\:hover\:bg-gray-900:hover {
+  background-color: #538BD1 !important;
+}
+
+/* 入力フィールドのスタイル */
+.revol-gpt input, 
+.revol-gpt textarea {
+  background-color: #F6F6F6 !important;
+  border-color: #B9B9B9 !important;
+}
+
+/* リンクのスタイル */
+.revol-gpt a {
+  color: #5999E8 !important;
+}
+
+.revol-gpt a:hover {
+  color: #538BD1 !important;
+}
+
+/* スクロールバーのスタイル */
+.revol-gpt ::-webkit-scrollbar-thumb {
+  background-color: rgba(185, 185, 185, 0.8) !important;
+}

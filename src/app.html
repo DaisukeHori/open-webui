@@ -22,6 +22,7 @@
 			href="/opensearch.xml"
 		/>
 		<script src="/static/loader.js" defer></script>
+		<link rel="stylesheet" href="/themes/revol-gpt.css" />
 
 		<script>
 			function resizeIframe(obj) {
@@ -36,7 +37,7 @@
 				const prefersDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
 				if (!localStorage?.theme) {
-					localStorage.theme = 'system';
+					localStorage.theme = 'revol-gpt';
 				}
 
 				if (localStorage.theme === 'system') {
@@ -56,6 +57,9 @@
 					document.documentElement.classList.add('dark');
 					document.documentElement.classList.add('her');
 					metaThemeColorTag.setAttribute('content', '#983724');
+				} else if (localStorage.theme === 'revol-gpt') {
+					document.documentElement.classList.add('revol-gpt');
+					metaThemeColorTag.setAttribute('content', '#FFFFFF');
 				} else {
 					document.documentElement.classList.add('dark');
 					metaThemeColorTag.setAttribute('content', '#171717');
