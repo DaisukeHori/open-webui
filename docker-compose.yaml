@@ -19,6 +19,8 @@ services:
       - ${OPEN_WEBUI_PORT-3000}:8080
     environment:
       - 'WEBUI_SECRET_KEY='
+      # アプリケーション名の設定
+      - WEBUI_NAME=Revol GPT
       # Microsoft OAuth設定
       - ENABLE_OAUTH_SIGNUP=true
       - OAUTH_MERGE_ACCOUNTS_BY_EMAIL=true
