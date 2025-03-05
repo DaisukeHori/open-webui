@@ -559,6 +559,10 @@
 	<!-- feel free to make a PR to fix if anyone wants to see it return -->
 	<!-- <link rel="stylesheet" type="text/css" href="/themes/rosepine.css" />
 	<link rel="stylesheet" type="text/css" href="/themes/rosepine-dawn.css" /> -->
+	
+	{#if $theme === 'revol-gpt'}
+		<link rel="stylesheet" type="text/css" href="/themes/revol-gpt.css" />
+	{/if}
 </svelte:head>
 
 {#if loaded}
