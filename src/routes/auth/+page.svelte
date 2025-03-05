@@ -127,7 +127,7 @@
 					<div class="my-auto pb-10 w-full dark:text-gray-100">
 						<div class="mb-1">
 							<div class="text-2xl font-medium">
-								{$i18n.t(`Sign in to {{WEBUI_NAME}}`, { WEBUI_NAME: $WEBUI_NAME })}<br/>
+								{$i18n.t(`Revol GPTにサインイン`)}<br/>
 								<p class="text-base mt-2">Revol GPTへようこそ。従業員の皆さんはMicrosoft アカウントでログインできます。</p>
 							</div>
 						</div>
