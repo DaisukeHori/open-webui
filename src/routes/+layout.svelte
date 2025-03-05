@@ -465,14 +465,10 @@
 
 		initI18n();
 		if (!localStorage.locale) {
-			const languages = await getLanguages();
-			const browserLanguages = navigator.languages
-				? navigator.languages
-				: [navigator.language || navigator.userLanguage];
-			const lang = backendConfig.default_locale
-				? backendConfig.default_locale
-				: bestMatchingLanguage(languages, browserLanguages, 'en-US');
+			// デフォルト言語を日本語に設定
+			const lang = 'ja-JP';
 			$i18n.changeLanguage(lang);
+			localStorage.locale = lang;
 		}
 
 		if (backendConfig) {
