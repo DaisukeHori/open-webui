@@ -7,7 +7,8 @@ import time
 from open_webui.models.users import Users, UserNameResponse
 from open_webui.models.channels import Channels
 from open_webui.models.chats import Chats
-from open_webui.socket.facts_processor import facts_processor
+# 循環インポートを避けるため、facts_processorへの直接参照をコメントアウト
+# 必要なときに動的にインポートする
 
 from open_webui.env import (
     ENABLE_WEBSOCKET_SUPPORT,
@@ -323,6 +324,9 @@ def get_event_emitter(request_info):
             # 事実抽出プロセスを実行
             if app_instance:
                 content = event_data.get("data", {}).get("content", "")
+                # 循環インポートを避けるための動的インポート
+                from open_webui.socket.facts_processor import facts_processor
+                
                 user_id = request_info["user_id"]
                 
                 # 非同期で事実抽出を実行
