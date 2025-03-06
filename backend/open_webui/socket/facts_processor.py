@@ -21,7 +21,7 @@ class FactsProcessor:
         """ユーザーの自動メモリ抽出設定を取得する"""
         if user_id not in self._user_settings:
             # デフォルト設定
-            self._user_settings[user_id] = AutoMemorySettings(enabled=False, min_confidence=0.7)
+            self._user_settings[user_id] = AutoMemorySettings(enabled=True, min_confidence=0.7)
         return self._user_settings[user_id]
     
     async def update_user_settings(self, user_id: str, settings: AutoMemorySettings) -> None:
@@ -68,7 +68,7 @@ class FactsProcessor:
             logger.error(f"Error processing message for facts: {str(e)}")
             return []
             
-    def _save_facts(
+    async def _save_facts(
         self, 
         user_id: str, 
         facts: List[Fact],
@@ -84,20 +84,23 @@ class FactsProcessor:
             min_confidence: 保存する最小確信度
             message_id: ソースとなったメッセージID
         """
+        facts_to_save = []
         try:
-            facts_to_save = [fact for fact in facts if fact.confidence >= min_confidence]
+            # 確信度が閾値以上の事実をフィルタリング
+            filtered_facts = [fact for fact in facts if fact.confidence >= min_confidence]
             
-            for fact in facts_to_save:
-                Memories.insert_new_memory(
+            # メモリに保存
+            for fact in filtered_facts:
+                memory = Memories.insert_new_memory(
                     user_id=user_id,
                     content=fact.content
                 )
+                if memory:
+                    facts_to_save.append(memory)
                 
-            if facts_to_save:
-                logger.info(f"Saved {len(facts_to_save)} facts for user {user_id}")
-                
+            logger.info(f"Saved {len(facts_to_save)} facts for user {user_id} from message {message_id}")
         except Exception as e:
-            logger.error(f"Error saving facts to database: {str(e)}")
+            logger.error(f"Error saving facts to database: {str(e)} for user {user_id}")
             
     async def manual_extract_facts(self, user_id: str, content: str, min_confidence: float = 0.5) -> List[Fact]:
         """
