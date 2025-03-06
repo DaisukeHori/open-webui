@@ -7,7 +7,8 @@ from pydantic import BaseModel
 
 from open_webui.models.memories import Memories, MemoryModel, AutoMemorySettings
 from open_webui.models.fact_extractor import Fact
-from open_webui.socket.facts_processor import facts_processor
+# 循環インポートを避けるため、facts_processorへの直接参照をコメントアウト
+# 必要なときに動的にインポートする
 from open_webui.routers.auths import get_current_user, get_current_admin
 
 router = APIRouter(prefix="/api/v1/auto-memory", tags=["auto-memory"])
@@ -30,6 +31,7 @@ async def get_auto_memory_settings(current_user = Depends(get_current_user)):
     """ユーザーの自動メモリ抽出設定を取得する"""
     try:
         user_id = current_user.id
+        from open_webui.socket.facts_processor import facts_processor
         settings = facts_processor.get_user_settings(user_id)
         return {"enabled": settings.enabled, "min_confidence": settings.min_confidence}
     except Exception as e:
@@ -44,6 +46,7 @@ async def update_auto_memory_settings(
     """ユーザーの自動メモリ抽出設定を更新する"""
     try:
         user_id = current_user.id
+        from open_webui.socket.facts_processor import facts_processor
         await facts_processor.update_user_settings(user_id, settings)
         return {"status": "success", "message": "Settings updated successfully"}
     except Exception as e:
@@ -103,6 +106,7 @@ async def manual_extract_facts(
     """テキストから手動で事実を抽出する"""
     try:
         user_id = current_user.id
+        from open_webui.socket.facts_processor import facts_processor
         facts = await facts_processor.manual_extract_facts(
             user_id=user_id,
             content=message.content,
