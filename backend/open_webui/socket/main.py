@@ -3,6 +3,7 @@ import socketio
 import logging
 import sys
 import time
+import traceback
 
 from open_webui.models.users import Users, UserNameResponse
 from open_webui.models.channels import Channels
@@ -27,7 +28,6 @@ from open_webui.env import (
 
 logging.basicConfig(stream=sys.stdout, level=GLOBAL_LOG_LEVEL)
 log = logging.getLogger(__name__)
-log.setLevel(SRC_LOG_LEVELS["SOCKET"])
 
 
 if WEBSOCKET_MANAGER == "redis":
@@ -323,21 +323,52 @@ def get_event_emitter(request_info):
             
             # 事実抽出プロセスを実行
             if app_instance:
-                content = event_data.get("data", {}).get("content", "")
-                # 循環インポートを避けるための動的インポート
-                from open_webui.socket.facts_processor import facts_processor
-                
-                user_id = request_info["user_id"]
-                
-                # 非同期で事実抽出を実行
-                message_data = {
-                    "user_id": user_id,
-                    "content": content,
-                    "id": request_info["message_id"]
-                }
-                await facts_processor.process_message(
-                    message_data
-                )
+                try:
+                    # イベントデータからメッセージ内容を取得
+                    content = event_data.get("data", {}).get("content", "")
+                    log.debug(f"[Socket] Processing message for auto-memory extraction")
+                    log.debug(f"[Socket] DEBUG: Message content type: {type(content)}")
+                    log.debug(f"[Socket] DEBUG: Message content length: {len(content) if content else 0} chars")
+                    log.debug(f"[Socket] DEBUG: Message content snippet: '{content[:50]}...' (truncated)")
+                    
+                    # 空またはNoneのコンテンツはスキップ
+                    if not content:
+                        log.debug("[Socket] DEBUG: Skipping auto-memory processing - empty content")
+                        return
+                    
+                    # エンコーディングチェック
+                    try:
+                        content_bytes = content.encode('utf-8')
+                        log.debug(f"[Socket] DEBUG: Content successfully encoded to UTF-8: {len(content_bytes)} bytes")
+                    except Exception as e:
+                        log.error(f"[Socket] ERROR: Content encoding error: {str(e)}")
+                        log.debug(f"[Socket] DEBUG: Content that failed encoding: '{content[:100]}...'")
+                        return
+                    
+                    # 循環インポートを避けるための動的インポート
+                    from open_webui.socket.facts_processor import facts_processor
+                    
+                    user_id = request_info["user_id"]
+                    log.debug(f"[Socket] DEBUG: Sending message from user {user_id} for fact extraction")
+                    log.debug(f"[Socket] DEBUG: Message ID: {request_info['message_id']}")
+                    
+                    # メッセージデータの構築
+                    message_data = {
+                        "user_id": user_id,
+                        "content": content,
+                        "id": request_info["message_id"]
+                    }
+                    log.debug(f"[Socket] DEBUG: Constructed message data for fact processing: user_id={user_id}, message_id={request_info['message_id']}")
+                    
+                    # 非同期で事実抽出を実行
+                    log.debug(f"[Socket] Calling facts_processor.process_message")
+                    extracted_facts = await facts_processor.process_message(message_data)
+                    log.debug(f"[Socket] DEBUG: Fact extraction completed, extracted {len(extracted_facts)} facts")
+                    
+                except Exception as e:
+                    log.error(f"[Socket] ERROR in auto-memory extraction: {str(e)}")
+                    log.debug(f"[Socket] DEBUG: Exception traceback: {traceback.format_exc()}")
+                    log.debug(f"[Socket] DEBUG: Message that caused error: {event_data}")
         if "type" in event_data and event_data["type"] == "replace":
             content = event_data.get("data", {}).get("content", "")
 

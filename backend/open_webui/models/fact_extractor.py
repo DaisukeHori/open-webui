@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 from open_webui.utils.completion import get_llm_completion
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.DEBUG) 
 
 class Fact(BaseModel):
     """抽出された事実"""
@@ -67,9 +67,15 @@ class FactExtractor:
         Returns:
             抽出された事実のリスト
         """
+        # 詳細なデバッグ情報: 入力メッセージの完全な内容を記録
+        print(f"[Fact Extractor] DEBUG: Full input message: '{message_content}'")
+        print(f"[Fact Extractor] DEBUG: Input message length: {len(message_content)} chars")
+        print(f"[Fact Extractor] DEBUG: Input message byte size: {len(message_content.encode('utf-8'))} bytes")
         try:
-            print(f"[Fact Extractor] Extracting facts from message: {message_content[:50]}...")
+            print(f"[Fact Extractor] Extracting facts from message: '{message_content[:50]}...'")
             # LLMに事実抽出のリクエストを送信
+            print(f"[Fact Extractor] DEBUG: Using model: {self.model_id}")
+            print(f"[Fact Extractor] DEBUG: Sending request to LLM with system prompt: '{self.SYSTEM_PROMPT[:100]}...'")
             response = await get_llm_completion(
                 model=self.model_id,
                 messages=[
@@ -80,31 +86,41 @@ class FactExtractor:
                 max_tokens=1000,
             )
             
-            print(f"[Fact Extractor] Using model: {self.model_id}")
+            print(f"[Fact Extractor] DEBUG: Raw response structure: {response.keys()}")
             
             # レスポンスからコンテンツを取得
             content = response.get("choices", [{}])[0].get("message", {}).get("content", "")
-            print(f"[Fact Extractor] Raw LLM response: {content[:200]}...")
+            print(f"[Fact Extractor] DEBUG: Full raw LLM response: '{content}'")
+            print(f"[Fact Extractor] DEBUG: Response length: {len(content)} chars")
             
             # JSONを抽出して解析
             try:
                 # JSONが直接返されるケース
                 print("[Fact Extractor] Attempting to parse direct JSON response")
                 facts_data = json.loads(content)
+                print(f"[Fact Extractor] DEBUG: Parsed JSON data: {facts_data}")
                 facts = []
                 
                 for fact_item in facts_data.get("facts", []):
-                    print(f"[Fact Extractor] Extracted fact: '{fact_item.get('fact', '')}' with confidence {fact_item.get('confidence', 0.0)}")
+                    fact_content = fact_item.get("fact", "")
+                    confidence = fact_item.get("confidence", 0.0)
+                    print(f"[Fact Extractor] Extracted fact: '{fact_content}' with confidence {confidence}")
+                    # 名前に関する事実かどうかを確認
+                    name_related = any(keyword in fact_content.lower() for keyword in ["名前", "name", "なまえ"])
+                    if name_related:
+                        print(f"[Fact Extractor] DEBUG: Detected name-related fact: '{fact_content}'")
                     facts.append(
                         Fact(
-                            content=fact_item.get("fact", ""),
-                            confidence=fact_item.get("confidence", 0.0)
+                            content=fact_content,
+                            confidence=confidence
                         )
                     )
                 print(f"[Fact Extractor] Successfully extracted {len(facts)} facts")
+                print(f"[Fact Extractor] DEBUG: All extracted facts: {[f.content for f in facts]}")
                 return facts
                 
             except json.JSONDecodeError:
+                print(f"[Fact Extractor] DEBUG: JSON decode error, attempting to extract JSON from text")
                 # JSONが直接返されない場合、コンテンツからJSONを抽出
                 json_start = content.find("{")
                 json_end = content.rfind("}")
@@ -112,24 +128,37 @@ class FactExtractor:
                 print(f"[Fact Extractor] Direct JSON parsing failed, attempting to extract JSON from content")
                 if json_start >= 0 and json_end >= 0:
                     json_str = content[json_start:json_end+1]
+                    print(f"[Fact Extractor] DEBUG: Extracted JSON string: '{json_str}'")
                     facts_data = json.loads(json_str)
+                    print(f"[Fact Extractor] DEBUG: Parsed JSON data from extraction: {facts_data}")
                     facts = []
                     print(f"[Fact Extractor] Found JSON object in content between positions {json_start} and {json_end}")
                     for fact_item in facts_data.get("facts", []):
+                        fact_content = fact_item.get("fact", "")
+                        confidence = fact_item.get("confidence", 0.0)
+                        print(f"[Fact Extractor] Extracted fact from embedded JSON: '{fact_content}' with confidence {confidence}")
+                        # 名前に関する事実かどうかを確認
+                        name_related = any(keyword in fact_content.lower() for keyword in ["名前", "name", "なまえ"])
+                        if name_related:
+                            print(f"[Fact Extractor] DEBUG: Detected name-related fact from JSON extraction: '{fact_content}'")
                         facts.append(
                             Fact(
-                                content=fact_item.get("fact", ""),
-                                confidence=fact_item.get("confidence", 0.0)
+                                content=fact_content,
+                                confidence=confidence
                             )
                         )
                     print(f"[Fact Extractor] Extracted {len(facts)} facts from embedded JSON")
+                    print(f"[Fact Extractor] DEBUG: All extracted facts from embedded JSON: {[f.content for f in facts]}")
                     return facts
                 
-                print(f"[Fact Extractor] WARNING: Failed to extract JSON from LLM response: {content[:100]}...")
+                print(f"[Fact Extractor] WARNING: Failed to extract JSON from LLM response: '{content[:100]}...'")
+                print(f"[Fact Extractor] DEBUG: No valid JSON could be extracted, returning empty facts list")
                 return []
                 
         except Exception as e:
             print(f"[Fact Extractor] ERROR extracting facts: {str(e)}")
+            import traceback
+            print(f"[Fact Extractor] DEBUG: Exception traceback: {traceback.format_exc()}")
             return []
 
 # シングルトンインスタンス
