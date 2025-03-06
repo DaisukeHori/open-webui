@@ -1,6 +1,6 @@
 import time
 import uuid
-from typing import Optional
+from typing import Optional, List
 
 from open_webui.internal.db import Base, get_db
 from pydantic import BaseModel, ConfigDict
@@ -34,6 +34,10 @@ class MemoryModel(BaseModel):
 ####################
 # Forms
 ####################
+
+class AutoMemorySettings(BaseModel):
+    enabled: bool = True
+    min_confidence: float = 0.7
 
 
 class MemoriesTable:
@@ -132,6 +136,27 @@ class MemoriesTable:
                 return True
             except Exception:
                 return False
+                
+    def store_extracted_facts(
+        self,
+        user_id: str,
+        facts: List,
+        min_confidence: float
+    ) -> List[MemoryModel]:
+        """抽出された事実をメモリに保存する"""
+        saved_memories = []
+        
+        for fact in facts:
+            # 最小確信度以下の事実はスキップ
+            if fact.confidence < min_confidence:
+                continue
+                
+            # 新規メモリを作成
+            memory = self.insert_new_memory(user_id, fact.content)
+            if memory:
+                saved_memories.append(memory)
+        
+        return saved_memories
 
 
 Memories = MemoriesTable()

@@ -7,6 +7,7 @@ import time
 from open_webui.models.users import Users, UserNameResponse
 from open_webui.models.channels import Channels
 from open_webui.models.chats import Chats
+from open_webui.socket.facts_processor import facts_processor
 
 from open_webui.env import (
     ENABLE_WEBSOCKET_SUPPORT,
@@ -46,6 +47,13 @@ else:
         allow_upgrades=ENABLE_WEBSOCKET_SUPPORT,
         always_connect=True,
     )
+
+# アプリケーションインスタンスを保存する
+app_instance = None
+def init_app(app):
+    global app_instance
+    app_instance = app
+
 
 
 # Timeout duration in seconds
@@ -295,6 +303,7 @@ def get_event_emitter(request_info):
             )
 
         if "type" in event_data and event_data["type"] == "message":
+            # 既存のコード
             message = Chats.get_message_by_id_and_message_id(
                 request_info["chat_id"],
                 request_info["message_id"],
@@ -310,7 +319,21 @@ def get_event_emitter(request_info):
                     "content": content,
                 },
             )
-
+            
+            # 事実抽出プロセスを実行
+            if app_instance:
+                content = event_data.get("data", {}).get("content", "")
+                user_id = request_info["user_id"]
+                
+                # 非同期で事実抽出を実行
+                message_data = {
+                    "user_id": user_id,
+                    "content": content,
+                    "id": request_info["message_id"]
+                }
+                await facts_processor.process_message(
+                    message_data
+                )
         if "type" in event_data and event_data["type"] == "replace":
             content = event_data.get("data", {}).get("content", "")
 
