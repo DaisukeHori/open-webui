@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 from open_webui.utils.completion import get_llm_completion
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 class Fact(BaseModel):
     """抽出された事実"""
@@ -67,6 +68,7 @@ class FactExtractor:
             抽出された事実のリスト
         """
         try:
+            print(f"[Fact Extractor] Extracting facts from message: {message_content[:50]}...")
             # LLMに事実抽出のリクエストを送信
             response = await get_llm_completion(
                 model=self.model_id,
@@ -78,22 +80,28 @@ class FactExtractor:
                 max_tokens=1000,
             )
             
+            print(f"[Fact Extractor] Using model: {self.model_id}")
+            
             # レスポンスからコンテンツを取得
             content = response.get("choices", [{}])[0].get("message", {}).get("content", "")
+            print(f"[Fact Extractor] Raw LLM response: {content[:200]}...")
             
             # JSONを抽出して解析
             try:
                 # JSONが直接返されるケース
+                print("[Fact Extractor] Attempting to parse direct JSON response")
                 facts_data = json.loads(content)
                 facts = []
                 
                 for fact_item in facts_data.get("facts", []):
+                    print(f"[Fact Extractor] Extracted fact: '{fact_item.get('fact', '')}' with confidence {fact_item.get('confidence', 0.0)}")
                     facts.append(
                         Fact(
                             content=fact_item.get("fact", ""),
                             confidence=fact_item.get("confidence", 0.0)
                         )
                     )
+                print(f"[Fact Extractor] Successfully extracted {len(facts)} facts")
                 return facts
                 
             except json.JSONDecodeError:
@@ -101,11 +109,12 @@ class FactExtractor:
                 json_start = content.find("{")
                 json_end = content.rfind("}")
                 
+                print(f"[Fact Extractor] Direct JSON parsing failed, attempting to extract JSON from content")
                 if json_start >= 0 and json_end >= 0:
                     json_str = content[json_start:json_end+1]
                     facts_data = json.loads(json_str)
-                    
                     facts = []
+                    print(f"[Fact Extractor] Found JSON object in content between positions {json_start} and {json_end}")
                     for fact_item in facts_data.get("facts", []):
                         facts.append(
                             Fact(
@@ -113,13 +122,14 @@ class FactExtractor:
                                 confidence=fact_item.get("confidence", 0.0)
                             )
                         )
+                    print(f"[Fact Extractor] Extracted {len(facts)} facts from embedded JSON")
                     return facts
                 
-                logger.warning(f"Failed to extract JSON from LLM response: {content}")
+                print(f"[Fact Extractor] WARNING: Failed to extract JSON from LLM response: {content[:100]}...")
                 return []
                 
         except Exception as e:
-            logger.error(f"Error extracting facts: {str(e)}")
+            print(f"[Fact Extractor] ERROR extracting facts: {str(e)}")
             return []
 
 # シングルトンインスタンス
