@@ -16,11 +16,8 @@ from starlette.responses import Response, StreamingResponse, JSONResponse
 
 from open_webui.models.users import UserModel
 
-from open_webui.socket.main import (
-    sio,
-    get_event_call,
-    get_event_emitter,
-)
+# 循環インポートを避けるため、socket.mainからのインポートを削除
+# 必要なときに関数内で動的に読み込む
 from open_webui.functions import generate_function_chat_completion
 
 from open_webui.routers.openai import (
@@ -74,7 +71,11 @@ async def generate_direct_chat_completion(
     session_id = metadata.get("session_id")
     request_id = str(uuid.uuid4())  # Generate a unique request ID
 
-    event_caller = get_event_call(metadata)
+    # 循環インポートを避けるための動的インポート
+    from open_webui.socket.main import (
+        sio,
+        get_event_call,
+    )
 
     channel = f"{user_id}:{session_id}:{request_id}"
 
@@ -91,6 +92,7 @@ async def generate_direct_chat_completion(
         sio.on(channel, message_listener)
 
         # Start processing chat completion in background
+        event_caller = get_event_call(metadata)
         res = await event_caller(
             {
                 "type": "request:chat:completion",
@@ -137,6 +139,8 @@ async def generate_direct_chat_completion(
         else:
             raise Exception(str(res))
     else:
+        # 循環インポートを避けるための動的インポート
+        event_caller = get_event_call(metadata)
         res = await event_caller(
             {
                 "type": "request:chat:completion",
@@ -313,8 +317,15 @@ async def chat_completed(request: Request, form_data: dict, user: Any):
         "user_id": user.id,
     }
 
+    # 循環インポートを避けるための動的インポート
+    from open_webui.socket.main import (
+        get_event_call,
+        get_event_emitter,
+    )
+
     extra_params = {
-        "__event_emitter__": get_event_emitter(metadata),
+        # get_event_emitter関数を動的にインポートして使用
+        "__event_emitter__": get_event_emitter(metadata), 
         "__event_call__": get_event_call(metadata),
         "__user__": {
             "id": user.id,
@@ -371,6 +382,12 @@ async def chat_action(request: Request, action_id: str, form_data: dict, user: A
     if model_id not in models:
         raise Exception("Model not found")
     model = models[model_id]
+
+    # 循環インポートを避けるための動的インポート
+    from open_webui.socket.main import (
+        get_event_call,
+        get_event_emitter,
+    )
 
     __event_emitter__ = get_event_emitter(
         {
