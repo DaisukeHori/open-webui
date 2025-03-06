@@ -19,10 +19,8 @@ from fastapi import (
 from starlette.responses import Response, StreamingResponse
 
 
-from open_webui.socket.main import (
-    get_event_call,
-    get_event_emitter,
-)
+# 循環インポートを避けるため、socket.mainからのインポートを削除
+# 必要なときに関数内で動的に読み込む
 
 
 from open_webui.models.functions import Functions
@@ -215,8 +213,13 @@ async def generate_function_chat_completion(
 
     if metadata:
         if all(k in metadata for k in ("session_id", "chat_id", "message_id")):
+            # 循環インポートを避けるための動的インポート
+            from open_webui.socket.main import (
+                get_event_call,
+                get_event_emitter,
+            )
             __event_emitter__ = get_event_emitter(metadata)
-            __event_call__ = get_event_call(metadata)
+            __event_call__ = get_event_call(metadata) 
         __task__ = metadata.get("task", None)
         __task_body__ = metadata.get("task_body", None)
 
