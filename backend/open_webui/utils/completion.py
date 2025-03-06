@@ -3,7 +3,7 @@ import json
 from typing import Dict, List, Any, Optional
 
 from open_webui.models.models import Models
-from open_webui.utils.models import get_all_models
+# from open_webui.utils.models import get_all_models  # 循環インポートを修正するためコメントアウト
 from open_webui.utils.chat import generate_chat_completion
 from open_webui.env import OPENAI_API_KEY
 
